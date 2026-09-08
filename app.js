@@ -15,6 +15,11 @@
     ['cadUf', 'pfUf'].forEach((id) => {
       const s = $(id);
       if (!s) return;
+      if (s.options.length === 0) {
+        const z = document.createElement('option');
+        z.value = ''; z.textContent = '—';
+        s.appendChild(z);
+      }
       const o = document.createElement('option');
       o.value = uf; o.textContent = uf;
       s.appendChild(o);
@@ -122,6 +127,65 @@
     } catch (_) { /* log não bloqueia */ }
   }
 
+  function guardarCadastroLocal(email, p) {
+    try {
+      localStorage.setItem('dv_cad_' + String(email || '').toLowerCase(), JSON.stringify(p));
+    } catch (_) {}
+  }
+  function lerCadastroLocal(email) {
+    try {
+      return JSON.parse(localStorage.getItem('dv_cad_' + String(email || '').toLowerCase()) || 'null');
+    } catch (_) { return null; }
+  }
+  function dadosDoCadastro(user) {
+    const m = (user && user.user_metadata) || {};
+    const loc = lerCadastroLocal(user && user.email) || {};
+    return {
+      nome: loc.nome || m.full_name || m.nome || '',
+      cpf: soDigitos(loc.cpf || m.cpf || ''),
+      tel: loc.tel || m.telefone || '',
+      empresa: loc.empresa || m.empresa || '',
+      cargo: loc.cargo || m.cargo || '',
+      cidade: loc.cidade || m.cidade || '',
+      uf: loc.uf || m.uf || '',
+      zap: loc.zap || m.whatsapp || ''
+    };
+  }
+  function preencherPerfilForm(p) {
+    if (!p) return;
+    if (p.nome) $('pfNome').value = p.nome;
+    if (p.cpf) $('pfCpf').value = p.cpf;
+    if (p.tel) $('pfTel').value = p.tel;
+    if (p.empresa) $('pfEmpresa').value = p.empresa;
+    if (p.cargo) $('pfCargo').value = p.cargo;
+    if (p.cidade) $('pfCidade').value = p.cidade;
+    if (p.uf) $('pfUf').value = p.uf;
+    if (p.zap) $('pfZap').value = p.zap;
+  }
+  function cadastroCompleto(p) {
+    if (!p) return false;
+    if (!p.nome || String(p.nome).trim().split(' ').length < 2) return false;
+    if (!cpfOk(p.cpf)) return false;
+    if (soDigitos(p.tel).length < 10) return false;
+    if (!p.empresa || !p.cidade || !p.uf) return false;
+    return true;
+  }
+  function mostrarAvisoEmail(email) {
+    const html = '<b>Quase lá — confirme seu e-mail</b>'
+      + 'Enviamos um link para <b>' + esc(email) + '</b>.<br><br>'
+      + '1. Abra a caixa de entrada desse e-mail (e o spam / lixo eletrônico).<br>'
+      + '2. Clique no link de confirmação da Cofelma / Supabase.<br>'
+      + '3. Volte aqui, use a aba <b>Entrar</b> com o mesmo e-mail e a senha que cadastrou.<br><br>'
+      + 'Os dados do cadastro (nome, CPF, empresa…) já ficaram salvos e não precisarão ser preenchidos de novo.';
+    const box = $('cadOk');
+    if (box) { box.innerHTML = html; box.classList.add('show'); }
+    const loginBox = $('loginOk');
+    if (loginBox) { loginBox.innerHTML = html; loginBox.classList.add('show'); }
+    $('cadErr').textContent = '';
+    $('tabLogin').classList.add('on'); $('tabCad').classList.remove('on');
+    $('formLogin').classList.remove('hidden'); $('formCad').classList.add('hidden');
+    $('loginEmail').value = email;
+  }
   function perfilFromForm(prefix) {
     const nome = ($(prefix + 'Nome').value || '').trim();
     const cpf = soDigitos($(prefix + 'Cpf').value);
@@ -235,8 +299,16 @@
       return;
     }
     if (!perfil || !perfil.cpf) {
+      const p = dadosDoCadastro(user);
+      if (cadastroCompleto(p)) {
+        try {
+          await salvarPerfil(p, user);
+        } catch (_) { /* cai no formulário */ }
+      }
+    }
+    if (!perfil || !perfil.cpf) {
       show('viewPerfil');
-      if (user.user_metadata && user.user_metadata.full_name) $('pfNome').value = user.user_metadata.full_name;
+      preencherPerfilForm(dadosDoCadastro(user));
       await logar('login_sem_cadastro', { extra: { origem: origem } });
       return;
     }
@@ -299,14 +371,28 @@
     if (p.erro) { $('cadErr').textContent = p.erro; return; }
     const email = $('cadEmail').value.trim();
     const senha = $('cadSenha').value;
+    guardarCadastroLocal(email, p);
     const { data, error } = await sb.auth.signUp({
       email,
       password: senha,
-      options: { data: { full_name: p.nome } }
+      options: {
+        emailRedirectTo: location.origin + location.pathname,
+        data: {
+          full_name: p.nome,
+          nome: p.nome,
+          cpf: p.cpf,
+          telefone: p.tel,
+          empresa: p.empresa,
+          cargo: p.cargo,
+          cidade: p.cidade,
+          uf: p.uf,
+          whatsapp: p.zap
+        }
+      }
     });
     if (error) { $('cadErr').textContent = error.message; return; }
     if (!data.session) {
-      $('cadErr').textContent = 'Conta criada. Confirme o e-mail e depois entre.';
+      mostrarAvisoEmail(email);
       return;
     }
     try {

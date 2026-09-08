@@ -56,6 +56,20 @@ h1 { margin: 0 0 6px; font-size: 1.25rem; }
 .btn.google { width: 100%; margin-top: 8px; background: #fff; }
 .btn.ghost { background: transparent; color: var(--navy); border: 0; width: 100%; margin-top: 6px; }
 .err { color: var(--bad); font-size: .82rem; font-weight: 700; min-height: 1.2em; }
+.okbox {
+  display: none;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: .88rem;
+  line-height: 1.45;
+  margin: 0 0 12px;
+  font-weight: 650;
+}
+.okbox.show { display: block; }
+.okbox b { display: block; margin-bottom: 4px; font-size: .95rem; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px; }
 .kpi { background: #fff; border: 1px solid var(--bd); border-radius: 12px; padding: 10px 12px; }
 .kpi .v { font-size: 1.15rem; font-weight: 800; }
