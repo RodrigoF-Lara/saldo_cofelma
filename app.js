@@ -270,7 +270,7 @@
       ? new Date(itens[0].atualizado_em).toLocaleString('pt-BR')
       : '—';
     $('metaLinha').textContent = (itens.length ? (itens.length + ' itens no snapshot · atualizado ' + when) : 'Ainda não há snapshot. Publique no Gestão PCP.')
-      + ' · disponível = saldo − DC';
+      + ' · disponível = saldo − pedido';
     const tb = $('tb');
     if (!rows.length) {
       tb.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:#64748b">Nenhum item.</td></tr>';
