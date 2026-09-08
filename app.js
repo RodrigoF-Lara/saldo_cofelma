@@ -312,6 +312,15 @@
       await logar('login_sem_cadastro', { extra: { origem: origem } });
       return;
     }
+    const ativo = !(perfil.ativo === false || perfil.ativo === 'f' || perfil.ativo === 'false');
+    if (!ativo) {
+      await logar('bloqueado', { extra: { origem: origem } });
+      lastUid = '';
+      await sb.auth.signOut();
+      show('viewAuth');
+      $('loginErr').textContent = 'Seu acesso foi bloqueado pelo PCP. Em caso de dúvida, fale com a Cofelma.';
+      return;
+    }
     $('whoNome').textContent = perfil.nome_completo + ' · ' + (user.email || '');
     show('viewApp');
     await logar(origem === 'cadastro' ? 'cadastro' : 'login', { extra: { origem: origem } });
