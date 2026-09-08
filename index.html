@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saldo Cofelma · Disponível para venda</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="logo.png" alt="Cofelma">
+      <div>
+        <b>Saldo Cofelma</b>
+        <small>Disponível para venda · RC0</small>
+      </div>
+    </div>
+    <div class="who hidden" id="whoBox">
+      <div id="whoNome">—</div>
+      <button type="button" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="viewAuth" class="auth-box card">
+      <h1>Acesso do representante</h1>
+      <p class="sub">Cadastre-se com e-mail. Nome, CPF, telefone, empresa e cidade são obrigatórios.</p>
+      <div class="tabs">
+        <button type="button" class="btn on" id="tabLogin">Entrar</button>
+        <button type="button" class="btn" id="tabCad">Cadastrar</button>
+      </div>
+      <form id="formLogin">
+        <div class="fld"><label>E-mail</label><input id="loginEmail" type="email" required autocomplete="username"></div>
+        <div class="fld"><label>Senha</label><input id="loginSenha" type="password" required autocomplete="current-password"></div>
+        <div class="err" id="loginErr"></div>
+        <button type="submit" class="btn pri">Entrar</button>
+      </form>
+      <form id="formCad" class="hidden">
+        <div class="fld"><label>E-mail <span class="req">*</span></label><input id="cadEmail" type="email" required></div>
+        <div class="fld"><label>Senha (mín. 8) <span class="req">*</span></label><input id="cadSenha" type="password" minlength="8" required></div>
+        <div class="fld"><label>Nome completo <span class="req">*</span></label><input id="cadNome" required></div>
+        <div class="row2">
+          <div class="fld"><label>CPF <span class="req">*</span></label><input id="cadCpf" inputmode="numeric" required placeholder="000.000.000-00"></div>
+          <div class="fld"><label>Telefone <span class="req">*</span></label><input id="cadTel" required placeholder="(00) 00000-0000"></div>
+        </div>
+        <div class="fld"><label>Empresa / representante <span class="req">*</span></label><input id="cadEmpresa" required></div>
+        <div class="fld"><label>Cargo</label><input id="cadCargo" placeholder="Opcional"></div>
+        <div class="row2">
+          <div class="fld"><label>Cidade <span class="req">*</span></label><input id="cadCidade" required></div>
+          <div class="fld"><label>UF <span class="req">*</span></label>
+            <select id="cadUf" required>
+              <option value="">—</option>
+            </select>
+          </div>
+        </div>
+        <div class="fld"><label>WhatsApp</label><input id="cadZap" placeholder="Opcional"></div>
+        <div class="err" id="cadErr"></div>
+        <button type="submit" class="btn pri">Criar conta</button>
+      </form>
+      <button type="button" class="btn google" id="btnGoogle">Continuar com Google</button>
+      <p class="sub" style="margin-top:12px">Após o Google, o cadastro (CPF, empresa, cidade) ainda é obrigatório.</p>
+    </section>
+
+    <section id="viewPerfil" class="auth-box card hidden">
+      <h1>Complete seu cadastro</h1>
+      <p class="sub">Para consultar o saldo precisamos de nome, CPF, telefone, empresa e cidade.</p>
+      <form id="formPerfil">
+        <div class="fld"><label>Nome completo <span class="req">*</span></label><input id="pfNome" required></div>
+        <div class="row2">
+          <div class="fld"><label>CPF <span class="req">*</span></label><input id="pfCpf" required></div>
+          <div class="fld"><label>Telefone <span class="req">*</span></label><input id="pfTel" required></div>
+        </div>
+        <div class="fld"><label>Empresa / representante <span class="req">*</span></label><input id="pfEmpresa" required></div>
+        <div class="fld"><label>Cargo</label><input id="pfCargo"></div>
+        <div class="row2">
+          <div class="fld"><label>Cidade <span class="req">*</span></label><input id="pfCidade" required></div>
+          <div class="fld"><label>UF <span class="req">*</span></label><select id="pfUf" required></select></div>
+        </div>
+        <div class="fld"><label>WhatsApp</label><input id="pfZap"></div>
+        <div class="err" id="pfErr"></div>
+        <button type="submit" class="btn pri">Salvar e entrar</button>
+      </form>
+    </section>
+
+    <section id="viewApp" class="hidden">
+      <div class="kpis">
+        <div class="kpi"><div class="v" id="kN">—</div><div class="l">Itens</div></div>
+        <div class="kpi"><div class="v" id="kSaldo">—</div><div class="l">Saldo</div></div>
+        <div class="kpi"><div class="v" id="kDc">—</div><div class="l">Pedidos DC</div></div>
+        <div class="kpi ok"><div class="v" id="kDisp">—</div><div class="l">Disponível</div></div>
+      </div>
+      <p class="meta" id="metaLinha">Carregando…</p>
+      <div class="filtros">
+        <input id="busca" placeholder="Buscar código ou descrição…" style="flex:1;min-width:180px">
+        <select id="sit">
+          <option value="">Todos</option>
+          <option value="disp">Só disponível &gt; 0</option>
+          <option value="neg">Sem cobertura</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th><th>Descrição</th><th>UM</th>
+              <th class="num">Saldo</th><th class="num">DC</th><th class="num">Disponível</th>
+            </tr>
+          </thead>
+          <tbody id="tb"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
