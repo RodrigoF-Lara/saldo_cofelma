@@ -4,8 +4,8 @@ Portal para representantes consultarem o **saldo disponível** dos itens **RC0**
 
 **Disponível = saldo Focco − pedidos DC.**
 
-Site: após ativar o GitHub Pages,  
-`https://rodrigof-lara.github.io/saldo_cofelma/`
+Site (Vercel): `https://saldo-cofelma.vercel.app`  
+(GitHub Pages também: `https://rodrigof-lara.github.io/saldo_cofelma/`)
 
 ## Como funciona
 
@@ -18,10 +18,11 @@ Site: após ativar o GitHub Pages,
 
 **Authentication → URL configuration**
 
-- Site URL: `https://rodrigof-lara.github.io/saldo_cofelma/`
+- Site URL: `https://saldo-cofelma.vercel.app`
 - Redirect URLs:
+  - `https://saldo-cofelma.vercel.app`
+  - `https://saldo-cofelma.vercel.app/`
   - `https://rodrigof-lara.github.io/saldo_cofelma/`
-  - `https://rodrigof-lara.github.io/saldo_cofelma/index.html`
   - `http://localhost:5500/` (opcional, teste local)
 
 **Authentication → Providers**
